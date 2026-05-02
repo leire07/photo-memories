@@ -139,6 +139,112 @@ textarea {
   font-size: 10px;
 }
 
+@media (max-width: 520px) {
+  .postcard-card {
+    padding: 16px;
+  }
+
+  .postcard-card::before {
+    inset: 9px;
+  }
+
+  .postcard-card > div {
+    gap: 10px;
+  }
+
+  .postcard-card > div > div:first-child {
+    position: relative;
+    min-height: 112px;
+    gap: 8px;
+  }
+
+  .postcard-card h1 {
+    max-width: calc(100% - 76px);
+    font-size: 30px;
+    line-height: 0.95;
+  }
+
+  .postcard-stamp {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 58px;
+    height: 48px;
+  }
+
+  .postcard-stamp::before {
+    inset: 6px;
+  }
+
+  .postcard-stamp::after {
+    right: -12px;
+    bottom: 4px;
+    width: 42px;
+    height: 18px;
+  }
+
+  .postcard-stamp-place,
+  .postcard-stamp-price {
+    font-size: 7px;
+  }
+
+  .postcard-stamp-icon {
+    margin: 2px 0;
+    font-size: 17px;
+  }
+
+  .postcard-card > div > div:nth-child(2) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    gap: 10px;
+  }
+
+  .postcard-card > div > div:nth-child(2) > div:first-child {
+    border-width: 3px;
+  }
+
+  .postcard-card > div > div:nth-child(2) > div:nth-child(2) {
+    padding-left: 10px;
+  }
+
+  .postcard-card > div > div:nth-child(2) > div:nth-child(2) > div:first-child {
+    display: grid;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .postcard-card > div > div:nth-child(2) > div:nth-child(2) > div:first-child p {
+    margin: 0;
+  }
+
+  .postcard-card > div > div:nth-child(2) > div:nth-child(2) > div:first-child span {
+    font-size: 10px;
+  }
+
+  .postcard-card > div > div:nth-child(2) > div:nth-child(2) > div:last-child {
+    display: none;
+  }
+
+  .postcard-card > div > div:last-child {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .postcard-card > div > div:last-child > p {
+    max-width: 100%;
+    flex-shrink: 1;
+    text-align: left;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .postcard-card > div > div:last-child span {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+}
+
 .diary-card {
   position: relative;
   border-radius: 18px;
