@@ -88,6 +88,66 @@ function formatDateForCard(value) {
   }
 }
 
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
+async function normalizeImageFile(file) {
+  const dataUrl = await readFileAsDataUrl(file);
+  const image = await loadImage(dataUrl);
+  const maxSize = 1800;
+  const ratio = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+  const width = Math.max(1, Math.round(image.naturalWidth * ratio));
+  const height = Math.max(1, Math.round(image.naturalHeight * ratio));
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  canvas.width = width;
+  canvas.height = height;
+  context.drawImage(image, 0, 0, width, height);
+
+  return canvas.toDataURL("image/jpeg", 0.9);
+}
+
+async function waitForImages(node) {
+  const images = Array.from(node.querySelectorAll("img"));
+
+  await Promise.all(
+    images.map(async (image) => {
+      if (!image.complete || image.naturalWidth === 0) {
+        await new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = reject;
+        });
+      }
+
+      if (image.decode) {
+        try {
+          await image.decode();
+        } catch {
+          // Safari can reject decode for images that are already usable.
+        }
+      }
+    })
+  );
+
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
 function InfoItem({ icon, label, value, labelColor, textColor }) {
   if (!value) return null;
 
@@ -508,13 +568,24 @@ export default function App() {
     }));
   }
 
-  function handleImageChange(event) {
+  async function handleImageChange(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => updateField("image", reader.result);
-    reader.readAsDataURL(file);
+    try {
+      setStatus("Preparando foto...");
+      const normalizedImage = await normalizeImageFile(file);
+      updateField("image", normalizedImage);
+      setStatus("Foto lista.");
+    } catch {
+      try {
+        const fallbackImage = await readFileAsDataUrl(file);
+        updateField("image", fallbackImage);
+        setStatus("Foto cargada.");
+      } catch {
+        setStatus("No se pudo cargar la foto.");
+      }
+    }
   }
 
   function saveDraft() {
@@ -538,6 +609,8 @@ export default function App() {
       const previousWidth = node.style.width;
       node.style.width = "448px";
       const height = form.style === "postal" ? 448 : node.scrollHeight;
+
+      await waitForImages(node);
 
       const dataUrl = await toPng(node, {
         cacheBust: true,
