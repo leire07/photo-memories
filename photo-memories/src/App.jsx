@@ -583,8 +583,7 @@ export default function App() {
           <div className="mb-5">
             <h1 className="text-2xl font-bold">Creador de fichas de recuerdos</h1>
             <p className="mt-2 text-sm text-slate-600">
-              Base en React pensada para crecer. Incluye estilos, foto, campos opcionales,
-              guardado local y exportación como imagen.
+              Guarda tus fotos con la información que quieras recordar: dónde estabas, quién te acompañaba, qué sentías... Elige un estilo, personaliza los colores y guarda tu recuerdo. 
             </p>
           </div>
 
